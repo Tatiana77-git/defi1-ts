@@ -86,7 +86,7 @@ function winGame(): void {
       fields[b].classList.contains('x') &&
       fields[c].classList.contains('x')
     ) {
-      showWinner(combo, 'Gagné X');
+      showWinner(combo, 'X wins');
       return;
     }
 
@@ -95,13 +95,13 @@ function winGame(): void {
       fields[b].classList.contains('o') &&
       fields[c].classList.contains('o')
     ) {
-      showWinner(combo, 'Gagné O');
+      showWinner(combo, 'O wins');
       return;
     }
   }
 
   if (count === 9) {
-    if (result) result.innerText = "Match Nul";
+    if (result) result.innerText = "It's a tie!";
     if (game) game.removeEventListener('click', letsGO);
   }
 }

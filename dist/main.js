@@ -3,7 +3,7 @@ const game = document.querySelector(".game");
 const result = document.querySelector(".result");
 const btn = document.querySelector(".new-game");
 const fields = document.querySelectorAll(".field");
-let step = false; 
+let step = false;
 let count = 0;
 const circle = `
   <svg class="circle">
@@ -78,19 +78,19 @@ function winGame() {
         if (fields[a].classList.contains('x') &&
             fields[b].classList.contains('x') &&
             fields[c].classList.contains('x')) {
-            showWinner(combo, 'Gagné X');
+            showWinner(combo, 'X wins');
             return;
         }
         if (fields[a].classList.contains('o') &&
             fields[b].classList.contains('o') &&
             fields[c].classList.contains('o')) {
-            showWinner(combo, 'Gagné O');
+            showWinner(combo, 'O wins');
             return;
         }
     }
     if (count === 9) {
         if (result)
-            result.innerText = "Match Nul";
+            result.innerText = "It's a tie!";
         if (game)
             game.removeEventListener('click', letsGO);
     }
