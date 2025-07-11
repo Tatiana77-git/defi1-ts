@@ -1,96 +1,111 @@
-const myName: string = "World";
-console.log(`Hello, ${myName}`);
 
+const game: HTMLElement | null = document.querySelector(".game");
+const result: HTMLElement | null = document.querySelector(".result");
+const btn: HTMLButtonElement | null = document.querySelector(".new-game");
+const fields: NodeListOf<HTMLElement> = document.querySelectorAll(".field");
 
-const data : MediaData = {
-  books: [
-    {
-      title: "The Hobbit",
-      author: "J.R.R. Tolkien",
-      year: 1937,
-    },
-    {
-      title: "1984",
-      author: "George Orwell",
-      year: 1949,
-    },
-  ],
-  movies: [
-    {
-      title: "Inception",
-      director: "Christopher Nolan",
-      year: 2010,
-    },
-    {
-      title: "Parasite",
-      director: "Bong Joon-ho",
-      year: 2019,
-    },
-  ],
-  albums: [
-    {
-      title: "Thriller",
-      artist: "Michael Jackson",
-      year: 1982,
-    },
-    {
-      title: "Back in Black",
-      artist: "AC/DC",
-      year: 1980,
-    },
-  ],
-};
+let step: boolean = false; // false = X, true = O
+let count: number = 0;
 
-const appName: string = "Mon application";
-const isOnline: boolean = true;
-const maxItem: number = 10;
- interface Book {
-  title: string;
-  author: string;
-  year: number;
-}
- interface Movie {
-    title :string;
-    director : string; 
-    year: number;
- }
+const circle: string = `
+  <svg class="circle">
+    <circle r="45" cx="58" cy="58" stroke="blue"
+    stroke-width="10" fill="none" stroke-linecap="round"/>
+  </svg>`;
 
- interface Album {
-  title: string;
-  artist: string;
-  year: number;
+const cross: string = `
+  <svg class="cross">
+    <line class="first" x1="15" y1="15" x2="100" y2="100"
+    stroke="red" stroke-width="10" stroke-linecap="round" />
+    <line class="second" x1="100" y1="15" x2="15" y2="100"
+    stroke="red" stroke-width="10" stroke-linecap="round" />
+  </svg>`;
+
+function stepCross(target: HTMLElement): void {
+  target.innerHTML = cross;
+  target.classList.add('x');
+  new Audio('audio/cross.mp3').play();
+  count++;
 }
 
-interface MediaData {
-  books: Book[];
-  movies: Movie[];
-  albums: Album[];
+function stepZero(target: HTMLElement): void {
+  target.innerHTML = circle;
+  target.classList.add('o');
+  new Audio('audio/zero.mp3').play();
+  count++;
 }
 
+function letsGO(e: Event): void {
+  const target = e.target as HTMLElement;
 
- function displayItemDetails(item : Book | Movie | Album) {
-   if ("author" in item) {
-     console.log(`Livre : ${item.title} par ${item.author} (${item.year})`);
-   } else if ("director" in item) {
-     console.log(`Film : ${item.title} réalisé par ${item.director} (${item.year})`);
-   } else if ("director" in item) {
-     console.log(`Album : ${item.title} par ${item.artist} (${item.year})`);
+  if (!target.classList.contains('field')) return;
+  if (target.classList.contains('x') || target.classList.contains('o')) return;
+
+  if (!step) {
+    stepCross(target);
   } else {
-     console.log("Type d'objet inconnu.");
-   }
- }
+    stepZero(target);
+  }
 
+  step = !step;
+  winGame();
+}
 
- data.albums.forEach((album) => {
-  displayItemDetails(album);
-});
+function newGame(): void {
+  step = false;
+  count = 0;
+  if (result) result.innerText = '';
+  fields.forEach(field => {
+    field.innerHTML = '';
+    field.classList.remove('x', 'o', 'active');
+  });
+  if (game) game.addEventListener('click', letsGO);
+}
 
-data.movies.forEach((movie) => {
-  displayItemDetails(movie);
-});
+function showWinner(indices: number[], message: string): void {
+  setTimeout(() => {
+    for (let index of indices) {
+      fields[index].classList.add('active');
+    }
+    if (result) result.innerText = message;
+  }, 300);
+  if (game) game.removeEventListener('click', letsGO);
+}
 
-data.books.forEach((book) => {
-  displayItemDetails(book);
-});
+function winGame(): void {
+  const combos: number[][] = [
+    [0,1,2], [3,4,5], [6,7,8],
+    [0,3,6], [1,4,7], [2,5,8],
+    [0,4,8], [2,4,6]
+  ];
 
+  for (let combo of combos) {
+    const [a, b, c] = combo;
+    if (
+      fields[a].classList.contains('x') &&
+      fields[b].classList.contains('x') &&
+      fields[c].classList.contains('x')
+    ) {
+      showWinner(combo, 'Gagné X');
+      return;
+    }
 
+    if (
+      fields[a].classList.contains('o') &&
+      fields[b].classList.contains('o') &&
+      fields[c].classList.contains('o')
+    ) {
+      showWinner(combo, 'Gagné O');
+      return;
+    }
+  }
+
+  if (count === 9) {
+    if (result) result.innerText = "Match Nul";
+    if (game) game.removeEventListener('click', letsGO);
+  }
+}
+
+// Initialisation
+if (btn) btn.addEventListener('click', newGame);
+if (game) game.addEventListener('click', letsGO);
