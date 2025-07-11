@@ -4,7 +4,7 @@ const result: HTMLElement | null = document.querySelector(".result");
 const btn: HTMLButtonElement | null = document.querySelector(".new-game");
 const fields: NodeListOf<HTMLElement> = document.querySelectorAll(".field");
 
-let step: boolean = false; // false = X, true = O
+let step: boolean = false; 
 let count: number = 0;
 
 const circle: string = `

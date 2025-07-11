@@ -1,5 +1,4 @@
 "use strict";
-
 const game = document.querySelector(".game");
 const result = document.querySelector(".result");
 const btn = document.querySelector(".new-game");
@@ -79,19 +78,19 @@ function winGame() {
         if (fields[a].classList.contains('x') &&
             fields[b].classList.contains('x') &&
             fields[c].classList.contains('x')) {
-            showWinner(combo, 'X wins!');
+            showWinner(combo, 'Gagné X');
             return;
         }
         if (fields[a].classList.contains('o') &&
             fields[b].classList.contains('o') &&
             fields[c].classList.contains('o')) {
-            showWinner(combo, 'O wins!');
+            showWinner(combo, 'Gagné O');
             return;
         }
     }
     if (count === 9) {
         if (result)
-            result.innerText = "It's a tie!";
+            result.innerText = "Match Nul";
         if (game)
             game.removeEventListener('click', letsGO);
     }
